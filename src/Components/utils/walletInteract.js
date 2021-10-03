@@ -87,7 +87,6 @@ export const getCurrentWalletConnected = async () => {
 
 export const pledgeFunds = async (amount) => {
   var myContract = new web3.eth.Contract(crowdsaleAbi, contractAdress);
-
   myContract.methods.buyTokens().send({
     from: window.ethereum.selectedAddress,
     value: amount * 10 ** 18,

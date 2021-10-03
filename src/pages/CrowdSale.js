@@ -46,14 +46,19 @@ export const CrowdSale = () => {
       );
     }
   }
-  useEffect(async () => {
-    const { address, status } = await getCurrentWalletConnected();
-    setWallet(address);
-    setStatus(status);
-    addWalletListener();
-    console.log(pledgeAmount);
+  useEffect(() => {
+    async function magic() {
+      const { address, status } = await getCurrentWalletConnected();
+      setWallet(address);
+      setStatus(status);
+      addWalletListener();
+    }
+    magic();
   }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
     setStatus(walletResponse.status);
@@ -99,7 +104,7 @@ export const CrowdSale = () => {
               Enter the BNB amount you would like to pledge
             </h2>
           </div>
-          <form className="mt-8 space-y-4">
+          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
             <input type="hidden" name="remember" value="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
