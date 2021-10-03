@@ -1,4 +1,3 @@
-import { Converter } from "../Components/MtokenConverter";
 import {
   connectWallet,
   getCurrentWalletConnected,
@@ -13,8 +12,6 @@ if (ethereum) {
   });
 }
 export const CrowdSale = () => {
-  const [error, setError] = useState();
-
   const [price, setCurrentPrice] = useState(0);
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
@@ -37,7 +34,11 @@ export const CrowdSale = () => {
         <p>
           {" "}
           🦊{" "}
-          <a target="_blank" href={`https://metamask.io/download.html`}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            href={`https://metamask.io/download.html`}
+          >
             You must install Metamask, a virtual Ethereum wallet, in your
             browser.
           </a>
@@ -53,11 +54,6 @@ export const CrowdSale = () => {
     console.log(pledgeAmount);
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    setError();
-  };
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
     setStatus(walletResponse.status);
@@ -103,7 +99,7 @@ export const CrowdSale = () => {
               Enter the BNB amount you would like to pledge
             </h2>
           </div>
-          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-4">
             <input type="hidden" name="remember" value="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>

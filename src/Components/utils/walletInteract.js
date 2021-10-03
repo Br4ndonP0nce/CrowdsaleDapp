@@ -27,7 +27,11 @@ export const connectWallet = async () => {
           <p>
             {" "}
             🦊{" "}
-            <a target="_blank" href={`https://metamask.io/download.html`}>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`https://metamask.io/download.html`}
+            >
               You must install Metamask, a virtual Ethereum wallet, in your
               browser.
             </a>
@@ -66,7 +70,11 @@ export const getCurrentWalletConnected = async () => {
           <p>
             {" "}
             🦊{" "}
-            <a target="_blank" href={`https://metamask.io/download.html`}>
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={`https://metamask.io/download.html`}
+            >
               You must install Metamask, a virtual Ethereum wallet, in your
               browser.
             </a>
@@ -80,12 +88,8 @@ export const getCurrentWalletConnected = async () => {
 export const pledgeFunds = async (amount) => {
   var myContract = new web3.eth.Contract(crowdsaleAbi, contractAdress);
 
-  const transactionParameters = {
+  myContract.methods.buyTokens().send({
     from: window.ethereum.selectedAddress,
-    to: contractAdress,
-    data: myContract.methods.buyTokens().send({
-      from: window.ethereum.selectedAddress,
-      value: amount * 10 ** 18,
-    }),
-  };
+    value: amount * 10 ** 18,
+  });
 };
