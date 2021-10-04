@@ -1,5 +1,9 @@
 # Crowdsale dapp
 
+### This react project can be cloned directly and just add additional dependencies or change the structure depending on necessities.
+
+> git clone https://github.com/Br4ndonP0nce/CrowdsaleDapp.git
+
 ## Installing web3.js
 
 ### This project uses NPM as the package manager so new dependencies should be installed using npm https://web3js.readthedocs.io/en/v1.3.4/index.html
