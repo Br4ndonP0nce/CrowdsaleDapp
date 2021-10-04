@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+# Crowdsale dapp
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Installing web3.js
 
-## Available Scripts
+### This project uses NPM as the package manager so new dependencies should be installed using npm https://web3js.readthedocs.io/en/v1.3.4/index.html
 
-In the project directory, you can run:
+> npm install web3
 
-### `yarn start`
+### This project uses tailwind as a CSS framework you can get tailwind at https://tailwindcss.com/
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+> npm install tailwindcss
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Installing metamask as the wallet provider
 
-### `yarn test`
+### This dapp is powered by metamask, a wallet provider that allow us to use a lot of blockchain networks and inject web3 objects directly to our browser window to install metamask go to:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+> https://metamask.io/download.html
 
-### `yarn build`
+### Reading transactions through the binance block explorer
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+> Access to https://testnet.bscscan.com/
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+> Paste the test contract token or the test crowdsale contract address (the crowdsale contract address can be found at ./Components/walletInteract.js) This will be changed once the contract is deployed on the main net.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Or with a new instance of a web3 object https://web3js.readthedocs.io/en/v1.3.4/getting-started.html
 
-### `yarn eject`
+> web3 = new Web3
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Wheres is the web 3 injected?
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Due to the nature of the dapp the web3 objects should be injected only in the crowdsale webpage unless the login functionalities require blockchain implementation, rendering of different sites of the app shouldnt affect any part of the project.

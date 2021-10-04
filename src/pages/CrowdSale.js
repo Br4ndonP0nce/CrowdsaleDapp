@@ -15,7 +15,6 @@ export const CrowdSale = () => {
   const [price, setCurrentPrice] = useState(0);
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
-
   const [pledgeAmount, setPledge] = useState("");
 
   function addWalletListener() {
