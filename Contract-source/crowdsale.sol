@@ -261,6 +261,8 @@ contract MCrowdsale is ReentrancyGuard, OwnerContract {
 
     // Amount of bnb raised calculated in wei 
     uint256 private _weiRaised;
+    //enables or disables the crowdsale
+    bool public  isActive = false;
 
     
     event TokensPurchased(address indexed purchaser,  uint256 value, uint256 amount);
@@ -285,6 +287,7 @@ contract MCrowdsale is ReentrancyGuard, OwnerContract {
             uint256 remainingCrowdsaleBalance = _token.balanceOf(address(this));
         _token.transfer(_owner,remainingCrowdsaleBalance);
     }
+    
     function burnUnsold() public onlyOwner{
         uint256 remainingCrowdsaleBalance = _token.balanceOf(address(this));
         _token.transfer(burnAddress,remainingCrowdsaleBalance);
@@ -308,8 +311,15 @@ contract MCrowdsale is ReentrancyGuard, OwnerContract {
         return _weiRaised;
     }
 
+    function startCrowdsale() public onlyOwner{
+            isActive = true;
+    }
+    function finishCrowdsale() public onlyOwner{
+        isActive = false;
+    }
  
     function buyTokens() public nonReentrant payable {
+        require(isActive == true,"Crowdsale:Crowdsale not active yet");
         uint256 weiAmount = msg.value;
         _preValidatePurchase(msg.sender, weiAmount);
 

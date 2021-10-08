@@ -153,6 +153,7 @@ contract Mcoin is Context,IERC20, Ownable{
 
     mapping (address => uint256) private _balances;
     mapping (address => mapping (address => uint256)) private _allowances;
+    mapping (address => bool) private canTransfer;
     address _owner;
     
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
@@ -163,6 +164,9 @@ contract Mcoin is Context,IERC20, Ownable{
     string private _name = "Mcoin";
     string private _symbol = "Mcoin";
     uint8 private _decimals = 18;
+    bool transferEnabled = false;
+    mapping(address=>uint256) private TimeLock;
+    mapping (address=>uint256) private maxTx;
 
     
     uint256 private _totalSupply = 1500 *10**6*10**18; //5B supply
@@ -173,6 +177,7 @@ contract Mcoin is Context,IERC20, Ownable{
     constructor(){
         _balances[_msgSender()] = _totalSupply;
         emit Transfer(address(0),_msgSender(),_totalSupply);
+        canTransfer[owner()] = true;
     }
     receive() external payable{}
 
@@ -235,9 +240,20 @@ contract Mcoin is Context,IERC20, Ownable{
         require(amount > 0,"BEP20: transfered amount must be greater than zero");
         uint256 senderBalance = _balances[from];
         require(senderBalance >= amount, "BEP20: transfer amount exceeds balance");
-        _balances[from] = senderBalance - amount;
-        _balances[to] += amount;
-        emit Transfer(from, to,amount);
+        
+        if(transferEnabled == false){
+            require(canTransfer[from]==true,"transfers are not allowed before crowdsale finishes");
+             _balances[from] = senderBalance - amount;
+             _balances[to] += amount;
+             emit Transfer(from, to,amount);
+        }
+        else{
+            require(TimeLock[from] <= block.timestamp,"User cant transfer or sell yet");
+            require(amount < maxTx[from],"User is tx limited to 10% of transaction"); //compares timestamp value stored in 
+            _balances[from] = senderBalance - amount;
+            _balances[to] += amount;
+            emit Transfer(from, to,amount);
+        }
         
     }
     
@@ -252,9 +268,63 @@ contract Mcoin is Context,IERC20, Ownable{
 
     }
 
+    /*
+    Once Crowdsale is deployed add the crowdsale address here
+    */
+    function enableTransferForAddress(address newAddress)public onlyOwner{ 
+        canTransfer[newAddress] = true;
+    }
+
+    /*
+    this one just checks in the mappinjg if the address can transfer
+    */
+    function canTransferCheck(address toCheck) external view returns(bool){
+        return(canTransfer[toCheck]);
+    }
+    //enables trading globally call it with true parameter once crowdsale finishes
+    function enableTrade(bool status) public onlyOwner{
+        transferEnabled = status;
+    }
+
+
+
+    /*
+    Its of extreme relevance that partnerships and new *locked* tokens are sent with this functions.
+    Since the token has 18 decimals to make it easier to interact with BNB make sure that during WEB3 calls you call the send(address,tokenAmount*10**18,unlockDate)
+    newAddress = any BEP20 address that wants to be added to the mapping
+    tokenAmount = the amount of tokens that will be sent. externally calling this function or even the transfer function 
+    requires to add the 18 zeros at the end of the quantity on the function call
+
+    Solidity uses unix timestamp to measure time, unlockDate should be treated and sent as a unix date. 
+    */
+    function sendtoYearLockAddresses(address newAddress,uint256 tokenAmount,uint256 unlockDate) public onlyOwner{
+        require(_balances[_msgSender()] > tokenAmount,"Not enough Mtoken to send to this address");
+        TimeLock[newAddress] = unlockDate;
+        maxTx[newAddress] = tokenAmount*10/100;
+        _transfer(_msgSender(),newAddress, tokenAmount);
+
+
+
+        
+            
+    }
+    /*
+    Its of extreme relevance that partnerships and new *locked* tokens are sent with this functions.
+    Since the token has 18 decimals to make it easier to interact with BNB make sure that during WEB3 calls you call the send(address,tokenAmount*10**18,unlockDate)
+    newAddress = any BEP20 address that wants to be added to the mapping
+    tokenAmount = the amount of tokens that will be sent. externally calling this function or even the transfer function 
+    requires to add the 18 zeros at the end of the quantity on the function call
+
+    Solidity uses unix timestamp to measure time, unlockDate should be treated and sent as a unix date. 
+    */
+     function sendFarm(address newAddress,uint256 tokenAmount,uint256 unlockDate) public onlyOwner{
+          require(_balances[_msgSender()] > tokenAmount,"Not enough Mtoken to send to this address");
+            TimeLock[newAddress] = unlockDate;
+            
+            _transfer(_msgSender(),newAddress, tokenAmount);
+
+    }
     
 
    
 }
-
-

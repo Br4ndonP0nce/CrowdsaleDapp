@@ -141,6 +141,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "toCheck",
+        "type": "address"
+      }
+    ],
+    "name": "canTransferCheck",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "deadAddress",
     "outputs": [
@@ -164,6 +183,32 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
+      }
+    ],
+    "name": "enableTrade",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "enableTransferForAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -208,6 +253,52 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "unlockDate",
+        "type": "uint256"
+      }
+    ],
+    "name": "sendFarm",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "unlockDate",
+        "type": "uint256"
+      }
+    ],
+    "name": "sendtoYearLockAddresses",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
