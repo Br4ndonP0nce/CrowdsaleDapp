@@ -1,7 +1,7 @@
 import Web3 from "web3";
 const web3 = new Web3(Web3.givenProvider);
 const crowdsaleAbi = require("../../abi/CrowdsaleABI.json");
-const contractAdress = "0xF12AF93f87DCf0eee6c99bd9108e56ae1e20caC9";
+const contractAdress = "0xB64dd68A1AFbbe2b147e960d19c4aD604D23ca49";
 export const connectWallet = async () => {
   if (window.ethereum) {
     try {
