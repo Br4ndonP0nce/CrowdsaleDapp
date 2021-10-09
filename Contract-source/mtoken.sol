@@ -157,19 +157,18 @@ contract Mcoin is Context,IERC20, Ownable{
     address _owner;
     
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
-    uint256 private mktTokens = 0;
-    uint256 private prizepoolTokens = 0;
-    uint256 private liqTokens = 0;
+   
 
     string private _name = "Mcoin";
     string private _symbol = "Mcoin";
     uint8 private _decimals = 18;
     bool transferEnabled = false;
     mapping(address=>uint256) private TimeLock;
-    mapping (address=>uint256) private maxTx;
-
     
+    mapping(address=>bool) private isRestricted;
+    uint256 public year = 31*10**6;
     uint256 private _totalSupply = 1500 *10**6*10**18; //5B supply
+    mapping(address=>uint256) txCount;
     
 
     
@@ -249,13 +248,26 @@ contract Mcoin is Context,IERC20, Ownable{
         }
         else{
             require(TimeLock[from] <= block.timestamp,"User cant transfer or sell yet");
-            require(amount < maxTx[from],"User is tx limited to 10% of transaction"); //compares timestamp value stored in 
+            if(isRestricted[from]){
+                
+                require(amount<=senderBalance/100*10);
+                _balances[from] = senderBalance - amount;
+                _balances[to] += amount;
+                txCount[from]+=1;
+                emit Transfer(from, to,amount);
+                
+
+            }
+            else{
+            
             _balances[from] = senderBalance - amount;
             _balances[to] += amount;
             emit Transfer(from, to,amount);
+            }
         }
         
     }
+   
     
 
     function _approve(address owner,address spender, uint256 amount) internal{
@@ -267,6 +279,7 @@ contract Mcoin is Context,IERC20, Ownable{
 
 
     }
+   
 
     /*
     Once Crowdsale is deployed add the crowdsale address here
@@ -281,9 +294,16 @@ contract Mcoin is Context,IERC20, Ownable{
     function canTransferCheck(address toCheck) external view returns(bool){
         return(canTransfer[toCheck]);
     }
+    function checkRestricted(address isrestricted) external view returns(bool){
+            return(isRestricted[isrestricted]);
+    }
     //enables trading globally call it with true parameter once crowdsale finishes
     function enableTrade(bool status) public onlyOwner{
         transferEnabled = status;
+    }
+
+    function isTradingEnabled() external view returns(bool){
+        return transferEnabled;
     }
 
 
@@ -300,7 +320,9 @@ contract Mcoin is Context,IERC20, Ownable{
     function sendtoYearLockAddresses(address newAddress,uint256 tokenAmount,uint256 unlockDate) public onlyOwner{
         require(_balances[_msgSender()] > tokenAmount,"Not enough Mtoken to send to this address");
         TimeLock[newAddress] = unlockDate;
-        maxTx[newAddress] = tokenAmount*10/100;
+        isRestricted[newAddress] = true;
+        //You need to add a tx 0 in the user mapping to count 2 or 3 transfers
+        txCount[newAddress] = 0;
         _transfer(_msgSender(),newAddress, tokenAmount);
 
 
@@ -320,7 +342,6 @@ contract Mcoin is Context,IERC20, Ownable{
      function sendFarm(address newAddress,uint256 tokenAmount,uint256 unlockDate) public onlyOwner{
           require(_balances[_msgSender()] > tokenAmount,"Not enough Mtoken to send to this address");
             TimeLock[newAddress] = unlockDate;
-            
             _transfer(_msgSender(),newAddress, tokenAmount);
 
     }
