@@ -159,16 +159,17 @@ contract Mcoin is Context,IERC20, Ownable{
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
    
 
-    string private _name = "Mcoin";
-    string private _symbol = "Mcoin";
+    string private _name = "M-coin";
+    string private _symbol = "M-coin";
     uint8 private _decimals = 18;
     bool transferEnabled = false;
     mapping(address=>uint256) private TimeLock;
     
     mapping(address=>bool) private isRestricted;
-    uint256 public year = 31*10**6;
+    uint256 public year = 120;
     uint256 private _totalSupply = 1500 *10**6*10**18; //5B supply
     mapping(address=>uint256) txCount;
+    mapping (address=>uint256) balancesSent;
     
 
     
@@ -249,11 +250,16 @@ contract Mcoin is Context,IERC20, Ownable{
         else{
             require(TimeLock[from] <= block.timestamp,"User cant transfer or sell yet");
             if(isRestricted[from]){
+                require(amount<=senderBalance/100*10,"User is trying to transfer above his allowance");
                 
-                require(amount<=senderBalance/100*10);
                 _balances[from] = senderBalance - amount;
                 _balances[to] += amount;
-                txCount[from]+=1;
+                balancesSent[from]+=amount;
+                if(balancesSent[from]>= senderBalance/100*10){
+                    TimeLock[from] = block.timestamp + year;
+                    balancesSent[from]=0;
+                }
+                
                 emit Transfer(from, to,amount);
                 
 
@@ -316,6 +322,12 @@ contract Mcoin is Context,IERC20, Ownable{
     requires to add the 18 zeros at the end of the quantity on the function call
 
     Solidity uses unix timestamp to measure time, unlockDate should be treated and sent as a unix date. 
+
+    MAKE SURE TO SEND THE ENTIRE AMOUNT OF TOKENS SINCE THIS INITIALIZES A LOCKING PERIOD FOR THE PERSON GETTING THE TOKENS. THIS FUNCTION SHOULD BE ONLY USED 1 TIME PER ADDRESS 
+
+
+    E.G: ME AS A PROVIDER IM GOING TO GET 1000 TOKENS, I ONLY CALL THIS FUNCTION ONCE, BECAUSE MY LOCKING PERIOD WILL BE FOR A YEAR, ANY TRANSFER AFTER THE INITIAL TRANSFER
+    HAS TO BE DONE USING NORMAL MEANS
     */
     function sendtoYearLockAddresses(address newAddress,uint256 tokenAmount,uint256 unlockDate) public onlyOwner{
         require(_balances[_msgSender()] > tokenAmount,"Not enough Mtoken to send to this address");
@@ -323,6 +335,7 @@ contract Mcoin is Context,IERC20, Ownable{
         isRestricted[newAddress] = true;
         //You need to add a tx 0 in the user mapping to count 2 or 3 transfers
         txCount[newAddress] = 0;
+       
         _transfer(_msgSender(),newAddress, tokenAmount);
 
 
