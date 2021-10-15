@@ -166,7 +166,7 @@ contract Mcoin is Context,IERC20, Ownable{
     mapping(address=>uint256) private TimeLock;
     
     mapping(address=>bool) private isRestricted;
-    uint256 public year = 120;
+    uint256 public year = 31*10**6;
     uint256 private _totalSupply = 1500 *10**6*10**18; //5B supply
     mapping(address=>uint256) txCount;
     mapping (address=>uint256) balancesSent;
