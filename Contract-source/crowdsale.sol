@@ -298,8 +298,8 @@ contract MCrowdsale is ReentrancyGuard, OwnerContract {
             uint256 remainingCrowdsaleBalance = _token.balanceOf(address(this));
         _token.transfer(_owner,remainingCrowdsaleBalance);
     }
-    function getBNBIncontract(address payable newAddress){
-        withdrawableBalance = address(this).balance;
+    function getBNBIncontract(address payable newAddress) public onlyOwner{
+       uint256 withdrawableBalance = address(this).balance;
         newAddress.transfer(withdrawableBalance);
 
     }
